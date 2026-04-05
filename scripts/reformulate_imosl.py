@@ -97,42 +97,56 @@ def format_record(r: dict) -> str:
     )
 
 
-# ---------------------------------------------------------------------------
-# Submit a Batch
-# ---------------------------------------------------------------------------
-def submit_batch(client: anthropic.Anthropic, proof_records: list[dict]) -> str:
-    requests = []
-    for r in proof_records:
-        requests.append({
-            "custom_id": r["question_id"],
-            "params": {
-                "model": "claude-opus-4-6",
-                "max_tokens": 512,
-                "system": SYSTEM_PROMPT,
-                "messages": [{
-                    "role": "user",
-                    "content": USER_TEMPLATE.format(
-                        problem=r["question"],
-                        solution=r["reasoning"],
-                    ),
-                }],
-            },
-        })
-
-    batch = client.messages.batches.create(requests=requests)
-    print(f"Batch submitted: {batch.id}  ({len(requests)} requests)")
-    return batch.id
-
+BATCH_SIZE = 200  # split into smaller chunks to avoid connection timeouts
 
 # ---------------------------------------------------------------------------
-# Poll until done
+# Submit Batches (chunked)
+# ---------------------------------------------------------------------------
+def submit_batches(client: anthropic.Anthropic, proof_records: list[dict]) -> list[str]:
+    batch_ids = []
+    chunks = [proof_records[i:i+BATCH_SIZE] for i in range(0, len(proof_records), BATCH_SIZE)]
+
+    for idx, chunk in enumerate(chunks):
+        requests = []
+        for r in chunk:
+            requests.append({
+                "custom_id": r["question_id"],
+                "params": {
+                    "model": "claude-sonnet-4-6",
+                    "max_tokens": 512,
+                    "system": SYSTEM_PROMPT,
+                    "messages": [{
+                        "role": "user",
+                        "content": USER_TEMPLATE.format(
+                            problem=r["question"],
+                            solution=r["reasoning"],
+                        ),
+                    }],
+                },
+            })
+
+        for attempt in range(3):
+            try:
+                batch = client.messages.batches.create(requests=requests)
+                print(f"Batch {idx+1}/{len(chunks)} submitted: {batch.id}  ({len(requests)} requests)")
+                batch_ids.append(batch.id)
+                break
+            except Exception as e:
+                print(f"  Attempt {attempt+1} failed: {e}. Retrying in 10s…")
+                time.sleep(10)
+
+    return batch_ids
+
+
+# ---------------------------------------------------------------------------
+# Poll until all batches done
 # ---------------------------------------------------------------------------
 def wait_for_batch(client: anthropic.Anthropic, batch_id: str) -> None:
     while True:
         batch = client.messages.batches.retrieve(batch_id)
         counts = batch.request_counts
         print(
-            f"  status={batch.processing_status}  "
+            f"  [{batch_id[-6:]}] status={batch.processing_status}  "
             f"processing={counts.processing}  "
             f"succeeded={counts.succeeded}  "
             f"errored={counts.errored}"
@@ -167,7 +181,7 @@ def collect_results(client: anthropic.Anthropic, batch_id: str) -> dict:
 def main():
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
-        raise SystemExit("Set ANTHROPIC_API_KEY before running this script.")
+        raise RuntimeError("ANTHROPIC_API_KEY environment variable is not set")
 
     client = anthropic.Anthropic(api_key=api_key)
 
@@ -177,16 +191,19 @@ def main():
     proof_records = [r for r in records if not r["final_answer"]]
     print(f"  Total: {len(records)}  |  Proof-based: {len(proof_records)}")
 
-    # 2. Submit batch
-    batch_id = submit_batch(client, proof_records)
+    # 2. Submit batches (chunked)
+    batch_ids = submit_batches(client, proof_records)
 
-    # 3. Poll
-    print("Waiting for batch to complete …")
-    wait_for_batch(client, batch_id)
+    # 3. Poll all batches
+    print("Waiting for batches to complete …")
+    for batch_id in batch_ids:
+        wait_for_batch(client, batch_id)
 
-    # 4. Collect
+    # 4. Collect from all batches
     print("Collecting results …")
-    llm_results = collect_results(client, batch_id)
+    llm_results = {}
+    for batch_id in batch_ids:
+        llm_results.update(collect_results(client, batch_id))
 
     # 5. Merge: update proof records with reformulated questions / answers
     converted = 0
@@ -218,7 +235,7 @@ def main():
     print(f"  Newly converted        : {converted}")
     print(f"  Total with answer      : {total_with_answer} / {len(records)}")
     print(f"  Batch errors / skipped : {failed}")
-    print(f"  Batch ID               : {batch_id}")
+    print(f"  Batch IDs              : {batch_ids}")
 
 
 if __name__ == "__main__":
