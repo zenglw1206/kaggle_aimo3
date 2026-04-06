@@ -17,6 +17,14 @@ All **11,662 problems** from 24 competitions, sourced from [AI-MO/olympiads](htt
 | With explicit answer | 437 |
 | Proof-based (no answer) | 11,225 |
 
+Problems span three levels of competition:
+
+| Scope | Problems | Competitions |
+|---|---|---|
+| International | 4,276 | IMO, IMO-SL, APMO, EGMO, BalticWay, RMM, IZho, Balkan MO, Nordic MO, Benelux MO, IberoAmerican MO, Balkan Shortlist |
+| National / TST | 2,390 | USAMO, USAJMO, USA TST, USA TSTST, INMO, Canada MO, Germany TST, Dutch TST, New Zealand MO, Serbia MO, AllSovietUnion |
+| Invitational | 4,996 | HMMT |
+
 Top competitions by volume:
 
 | Competition | Count |
