@@ -1245,5 +1245,5 @@ if os.getenv('KAGGLE_IS_COMPETITION_RERUN'):
     inference_server.serve()
 else:
     inference_server.run_local_gateway(
-        ('/kaggle/input/ai-mathematical-olympiad-progress-prize-3/test.csv',)
+        ('/kaggle/input/competitions/ai-mathematical-olympiad-progress-prize-3/test.csv',)
     )
