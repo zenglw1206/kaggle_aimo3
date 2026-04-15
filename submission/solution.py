@@ -196,6 +196,110 @@ class CFG:
         'Always explicitly verify your answer satisfies every constraint before finalizing.'
     )
 
+    geometry_prompt = (
+        'You are an expert in olympiad geometry. Solve the problem using the techniques below.\n\n'
+        '# Core Techniques:\n'
+        '1. SETUP: Label all key points. State which objects are given and what must be proved or found.\n'
+        '2. CHOOSE APPROACH:\n'
+        '   - Synthetic: angle chasing, similar triangles, power of a point, radical axes.\n'
+        '   - Trigonometric: law of sines/cosines, trigonometric cevians.\n'
+        '   - Coordinate: place key points at convenient coordinates; compute distances algebraically.\n'
+        '   - Vector/complex: represent points as vectors or complex numbers for rotation/reflection.\n'
+        '3. KEY LEMMAS: Identify useful circle theorems (inscribed angle, Ptolemy, Miquel), '
+        'concyclicity, collinearity (Menelaus, Desargues), or special centers '
+        '(centroid, orthocenter, circumcenter, incenter, excenters).\n'
+        '4. COMPUTE: Use Python with sympy.geometry or coordinate computation to verify lengths, '
+        'angles, and area formulae numerically.\n'
+        '5. VERIFY: Confirm the answer is consistent with all given lengths and angle conditions.\n\n'
+        '# Common Pitfalls:\n'
+        '- Check whether points are on the same side of a line.\n'
+        '- Verify circle orientation (clockwise vs counterclockwise) before applying signed formulas.\n'
+        '- Confirm all auxiliary constructions actually exist given the constraints.\n\n'
+        '# Output Format:\n'
+        'The final answer must be a non-negative integer between 0 and 99999.\n'
+        'Place your final numerical answer inside \\boxed{}, e.g., \\boxed{42}'
+    )
+
+    number_theory_prompt = (
+        'You are an expert in olympiad number theory. Solve the problem using the techniques below.\n\n'
+        '# Core Techniques:\n'
+        '1. SETUP: Identify all integer/prime constraints. State the domain clearly '
+        '(positive integers, natural numbers, etc.).\n'
+        '2. SMALL CASES FIRST: Compute the answer for small values using Python. '
+        'Look for periodicity, patterns, or exceptional cases.\n'
+        '3. MODULAR ARITHMETIC: Work mod small primes and prime powers. '
+        'Apply CRT to combine congruences. Use quadratic reciprocity for residue questions.\n'
+        '4. KEY THEOREMS: Fermat\'s Little Theorem, Euler\'s Theorem, Wilson\'s Theorem, '
+        'Lifting the Exponent (LTE), Zsygmondy, Legendre\'s formula for p-adic valuations.\n'
+        '5. STRUCTURE: Factor expressions. Use infinite descent or strong induction to rule out '
+        'impossible cases. Look for Vieta jumping when symmetric conditions appear.\n'
+        '6. VERIFY: Check all candidate solutions satisfy every original constraint '
+        '(divisibility, primality, positivity).\n\n'
+        '# Python Tools:\n'
+        '- sympy.isprime, sympy.factorint, sympy.totient, sympy.nthroot_mod\n'
+        '- pow(a, b, m) for fast modular exponentiation\n'
+        '- Brute-force ranges to confirm theoretical bounds\n\n'
+        '# Output Format:\n'
+        'The final answer must be a non-negative integer between 0 and 99999.\n'
+        'Place your final numerical answer inside \\boxed{}, e.g., \\boxed{42}'
+    )
+
+    combinatorics_prompt = (
+        'You are an expert in olympiad combinatorics. Solve the problem using the techniques below.\n\n'
+        '# Core Techniques:\n'
+        '1. UNDERSTAND THE COUNT: Clarify exactly what is being counted. '
+        'Is order important? Are objects distinguishable?\n'
+        '2. SMALL CASES: Enumerate for n=1,2,3,4 by hand or in Python to spot the pattern. '
+        'Verify any formula against brute-force counts.\n'
+        '3. STRATEGY SELECTION:\n'
+        '   - Bijection: find a one-to-one correspondence with a known counted set.\n'
+        '   - Double counting: count the same quantity two ways and equate.\n'
+        '   - Inclusion-Exclusion: subtract overcounted cases systematically.\n'
+        '   - Generating functions: encode counts as coefficients; multiply series.\n'
+        '   - Recurrence: express f(n) in terms of f(n-1), f(n-2), ...; solve or iterate.\n'
+        '   - Pigeonhole: prove existence by showing a pigeonhole argument.\n'
+        '   - Graph theory: model as a graph problem (coloring, paths, matchings).\n'
+        '4. VERIFY: Confirm the formula matches brute-force for all small cases before extrapolating.\n\n'
+        '# Python Tools:\n'
+        '- itertools.combinations, itertools.permutations for brute-force enumeration\n'
+        '- sympy.binomial, sympy.catalan, sympy.fibonacci\n'
+        '- networkx for graph-based combinatorics\n'
+        '- math.comb for binomial coefficients\n\n'
+        '# Output Format:\n'
+        'The final answer must be a non-negative integer between 0 and 99999.\n'
+        'Place your final numerical answer inside \\boxed{}, e.g., \\boxed{42}'
+    )
+
+    algebra_prompt = (
+        'You are an expert in olympiad algebra. Solve the problem using the techniques below.\n\n'
+        '# Core Techniques:\n'
+        '1. SETUP: Define all variables clearly. State the domain (reals, positives, integers).\n'
+        '2. INEQUALITIES: Apply AM-GM, Cauchy-Schwarz (Engel/Titu form), Jensen\'s inequality, '
+        'Power Mean, Schur, or SOS decomposition. Always check when equality holds.\n'
+        '3. EQUATIONS & SYSTEMS: Try substitution, symmetric reduction, or Vieta\'s formulas. '
+        'For functional equations: test f=constant, f=linear; check injectivity/surjectivity; '
+        'substitute special values (0, 1, -x, x+y).\n'
+        '4. POLYNOMIALS: Factor, find rational roots, use the rational root theorem. '
+        'Apply resultants or discriminants for existence of real roots.\n'
+        '5. OPTIMIZATION: For max/min problems, check boundary conditions and critical points. '
+        'Use Lagrange multipliers or parametric substitution for constrained optimization.\n'
+        '6. SEQUENCES & SERIES: Identify arithmetic, geometric, or telescoping structure. '
+        'Use generating functions or closed-form summation formulas.\n'
+        '7. VERIFY: Substitute the answer back into all original equations/inequalities. '
+        'Confirm the equality case or extremum condition.\n\n'
+        '# Python Tools:\n'
+        '- sympy.solve, sympy.simplify, sympy.factor, sympy.expand\n'
+        '- sympy.minimize_scalar or scipy.optimize for numerical extrema\n'
+        '- numpy for matrix/eigenvalue problems\n\n'
+        '# Output Format:\n'
+        'The final answer must be a non-negative integer between 0 and 99999.\n'
+        'Place your final numerical answer inside \\boxed{}, e.g., \\boxed{42}'
+    )
+
+    # Staged attempt allocation
+    stage1_attempts = 4    # fast probe round
+    stage1_early_stop = 3  # if 3/4 agree in stage 1, skip stage 2 (easy problem)
+
     temperatures = [0.7, 1.0, 1.0, 1.2, 1.0, 0.7, 1.0, 1.2, 1.0, 1.0]
 
     served_model_name = 'gpt-oss'
@@ -651,9 +755,65 @@ class AIMO3Solver:
 
         return total_entropy / token_count, total_max_logprob / token_count
 
-    def _get_strategy_prompt(self, attempt_index: int) -> str:
+    _GEOMETRY_KEYWORDS = {
+        'triangle', 'circle', 'point', 'line', 'angle', 'polygon', 'perpendicular',
+        'parallel', 'tangent', 'circumcircle', 'incircle', 'chord', 'arc', 'median',
+        'altitude', 'bisector', 'quadrilateral', 'hexagon', 'pentagon', 'rectangle',
+        'square', 'rhombus', 'trapezoid', 'area', 'perimeter', 'radius', 'diameter',
+        'circumradius', 'inradius', 'collinear', 'concyclic', 'orthocenter',
+        'centroid', 'circumcenter', 'incenter', 'excircle', 'cyclic', 'midpoint',
+        'diagonal', 'inscribed', 'circumscribed', 'segment', 'ray', 'isosceles',
+        'equilateral', 'scalene', 'hypotenuse', 'pythagorean',
+    }
+    _NT_KEYWORDS = {
+        'prime', 'divisible', 'divisor', 'modulo', 'congruent', 'gcd', 'lcm',
+        'remainder', 'coprime', 'euler', 'fermat', 'wilson', 'residue',
+        'divisibility', 'factorization', 'composite', 'digit', 'decimal',
+        'floor', 'ceiling', 'fibonacci', 'perfect', 'integer', 'natural',
+        'p-adic', 'valuation', 'primitive root', 'quadratic residue', 'zsygmondy',
+    }
+    _COMBO_KEYWORDS = {
+        'count', 'ways', 'arrange', 'permutation', 'combination', 'choose',
+        'select', 'probability', 'graph', 'vertex', 'edge', 'path', 'cycle',
+        'tree', 'color', 'tournament', 'subset', 'sequence', 'string', 'word',
+        'tiling', 'domino', 'grid', 'lattice', 'bijection', 'injection',
+        'pigeonhole', 'inclusion', 'exclusion', 'generating', 'recurrence',
+        'distribute', 'partition', 'arrangement', 'coloring', 'matching',
+    }
+    _ALGEBRA_KEYWORDS = {
+        'polynomial', 'equation', 'function', 'inequality', 'maximum', 'minimum',
+        'optimize', 'real', 'complex', 'root', 'coefficient', 'expression',
+        'quadratic', 'cubic', 'bound', 'continuous', 'monotone', 'convex',
+        'concave', 'symmetric', 'series', 'am-gm', 'cauchy', 'jensen',
+        'functional', 'algebraic', 'variable', 'parameter', 'sum', 'product',
+    }
+
+    def _detect_category(self, problem: str) -> str:
+        """Score the problem text against keyword sets and return the best-matching category."""
+        text = problem.lower()
+        scores = {
+            'Geometry': sum(1 for kw in self._GEOMETRY_KEYWORDS if kw in text),
+            'Number Theory': sum(1 for kw in self._NT_KEYWORDS if kw in text),
+            'Combinatorics': sum(1 for kw in self._COMBO_KEYWORDS if kw in text),
+            'Algebra': sum(1 for kw in self._ALGEBRA_KEYWORDS if kw in text),
+        }
+        return max(scores, key=scores.get)
+
+    def _get_strategy_prompt(self, attempt_index: int, category: str) -> str:
+        """Return a system prompt for this attempt.
+
+        Attempts 0-3 use the category-specific analytical prompt.
+        Attempts 4-6 use the computational (brute-force) prompt.
+        Attempts 7+ use the backward (constraint-elimination) prompt.
+        """
+        category_prompts = {
+            'Geometry': self.cfg.geometry_prompt,
+            'Number Theory': self.cfg.number_theory_prompt,
+            'Combinatorics': self.cfg.combinatorics_prompt,
+            'Algebra': self.cfg.algebra_prompt,
+        }
         if attempt_index < 4:
-            return self.cfg.system_prompt
+            return category_prompts.get(category, self.cfg.system_prompt)
         elif attempt_index < 7:
             return self.cfg.computational_prompt
         else:
@@ -907,8 +1067,53 @@ class AIMO3Solver:
         print(f'\nFinal Answer: {final_answer}\n')
         return final_answer
 
+    def _run_attempt_batch(
+        self,
+        user_input: str,
+        tasks: list,
+        deadline: float,
+        early_stop_threshold: int,
+    ) -> tuple[list, list]:
+        """Submit a batch of attempts and collect results.
+
+        Stops early if `early_stop_threshold` attempts agree on the same answer.
+        Returns (detailed_results, valid_answers).
+        """
+        detailed_results = []
+        valid_answers = []
+        stop_event = threading.Event()
+        executor = ThreadPoolExecutor(max_workers=min(len(tasks), self.cfg.workers))
+
+        try:
+            futures = [
+                executor.submit(self._process_attempt, user_input, sp, ai, stop_event, deadline, temp)
+                for sp, ai, temp in tasks
+            ]
+            for future in as_completed(futures):
+                try:
+                    result = future.result()
+                    detailed_results.append(result)
+                    if result['Answer'] is not None:
+                        valid_answers.append(result['Answer'])
+                    counts = Counter(valid_answers).most_common(1)
+                    if counts and counts[0][1] >= early_stop_threshold:
+                        stop_event.set()
+                        for f in futures:
+                            f.cancel()
+                        break
+                except Exception as exc:
+                    print(f'Future failed: {exc}')
+        finally:
+            stop_event.set()
+            executor.shutdown(wait=True, cancel_futures=True)
+
+        return detailed_results, valid_answers
+
     def solve_problem(self, problem: str) -> int:
         print(f'\nProblem: {problem}\n')
+
+        category = self._detect_category(problem)
+        print(f'Detected category: {category}\n')
 
         user_input = f'{problem} {self.cfg.preference_prompt}'
 
@@ -924,46 +1129,40 @@ class AIMO3Solver:
         deadline = time.time() + budget
         print(f'Budget: {budget:.2f} seconds | Deadline: {deadline:.2f}\n')
 
-        tasks = [
-            (self._get_strategy_prompt(i), i, self.cfg.temperatures[i % len(self.cfg.temperatures)])
+        all_tasks = [
+            (self._get_strategy_prompt(i, category), i, self.cfg.temperatures[i % len(self.cfg.temperatures)])
             for i in range(self.cfg.attempts)
         ]
+        stage1_tasks = all_tasks[:self.cfg.stage1_attempts]
+        stage2_tasks = all_tasks[self.cfg.stage1_attempts:]
 
-        detailed_results = []
-        valid_answers = []
-        stop_event = threading.Event()
-        executor = ThreadPoolExecutor(max_workers=self.cfg.workers)
+        # ── Stage 1: fast probe ───────────────────────────────────────────────
+        print(f'Stage 1: running {len(stage1_tasks)} probe attempts...')
+        s1_results, s1_answers = self._run_attempt_batch(
+            user_input, stage1_tasks, deadline,
+            early_stop_threshold=self.cfg.early_stop,
+        )
+        detailed_results = s1_results
+        valid_answers = s1_answers
 
-        try:
-            futures = [
-                executor.submit(self._process_attempt, user_input, sp, ai, stop_event, deadline, temp)
-                for sp, ai, temp in tasks
-            ]
+        top1_counts = Counter(s1_answers).most_common(1)
+        top1_votes = top1_counts[0][1] if top1_counts else 0
 
-            for future in as_completed(futures):
-                try:
-                    result = future.result()
-                    detailed_results.append(result)
+        if top1_votes >= self.cfg.stage1_early_stop:
+            print(f'Stage 1 consensus ({top1_votes}/{len(stage1_tasks)} votes). Skipping stage 2.\n')
+        else:
+            # ── Stage 2: full round ───────────────────────────────────────────
+            print(f'Stage 1: low consensus ({top1_votes} votes). Running stage 2 ({len(stage2_tasks)} attempts)...')
+            s2_results, s2_answers = self._run_attempt_batch(
+                user_input, stage2_tasks, deadline,
+                early_stop_threshold=self.cfg.early_stop,
+            )
+            detailed_results.extend(s2_results)
+            valid_answers.extend(s2_answers)
 
-                    if result['Answer'] is not None:
-                        valid_answers.append(result['Answer'])
+        self.problems_remaining = max(0, self.problems_remaining - 1)
 
-                    counts = Counter(valid_answers).most_common(1)
-                    if counts and counts[0][1] >= self.cfg.early_stop:
-                        stop_event.set()
-                        for f in futures:
-                            f.cancel()
-                        break
-
-                except Exception as exc:
-                    print(f'Future failed: {exc}')
-
-        finally:
-            stop_event.set()
-            executor.shutdown(wait=True, cancel_futures=True)
-            self.problems_remaining = max(0, self.problems_remaining - 1)
-
-        # Refinement round if confidence is low
+        # ── Refinement round if confidence is still low ───────────────────────
         counts = Counter(valid_answers).most_common(1)
         top_votes = counts[0][1] if counts else 0
         top_candidate = counts[0][0] if counts else None
@@ -971,8 +1170,15 @@ class AIMO3Solver:
         if top_votes < 4 and top_candidate is not None and time.time() < deadline - 120:
             print(f'\nLow confidence ({top_votes} votes). Running refinement round with hint...')
 
+            category_prompts = {
+                'Geometry': self.cfg.geometry_prompt,
+                'Number Theory': self.cfg.number_theory_prompt,
+                'Combinatorics': self.cfg.combinatorics_prompt,
+                'Algebra': self.cfg.algebra_prompt,
+            }
+            base_prompt = category_prompts.get(category, self.cfg.system_prompt)
             hint_prompt = (
-                self.cfg.system_prompt +
+                base_prompt +
                 f'\n\nNote: preliminary attempts most often suggest the answer is {top_candidate}. '
                 f'Please independently verify or find the correct answer.'
             )
@@ -980,28 +1186,13 @@ class AIMO3Solver:
                 (hint_prompt, self.cfg.attempts + i, self.cfg.temperatures[i % len(self.cfg.temperatures)])
                 for i in range(3)
             ]
-
-            ref_stop = threading.Event()
-            ref_executor = ThreadPoolExecutor(max_workers=min(3, self.cfg.workers))
-
-            try:
-                ref_futures = [
-                    ref_executor.submit(self._process_attempt, user_input, sp, ai, ref_stop, deadline, temp)
-                    for sp, ai, temp in refinement_tasks
-                ]
-                for f in as_completed(ref_futures):
-                    try:
-                        r = f.result()
-                        detailed_results.append(r)
-                        if r['Answer'] is not None:
-                            valid_answers.append(r['Answer'])
-                    except Exception:
-                        pass
-            finally:
-                ref_stop.set()
-                ref_executor.shutdown(wait=True, cancel_futures=True)
-
-            print(f'Refinement added {len(refinement_tasks)} results.')
+            ref_results, ref_answers = self._run_attempt_batch(
+                user_input, refinement_tasks, deadline,
+                early_stop_threshold=self.cfg.early_stop,
+            )
+            detailed_results.extend(ref_results)
+            valid_answers.extend(ref_answers)
+            print(f'Refinement added {len(ref_results)} results.')
 
         if detailed_results:
             results_df = pd.DataFrame(detailed_results)
