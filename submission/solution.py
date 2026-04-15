@@ -16,7 +16,7 @@ def set_env(input_archive, temp_dir):
 
 
 set_env(
-    input_archive='/kaggle/input/aimo-3-utils/wheels.tar.gz',
+    input_archive='/kaggle/input/notebooks/andreasbis/aimo-3-utils/wheels.tar.gz',
     temp_dir='/kaggle/tmp/setup'
 )
 
@@ -303,7 +303,7 @@ class CFG:
     temperatures = [0.7, 1.0, 1.0, 1.2, 1.0, 0.7, 1.0, 1.2, 1.0, 1.0]
 
     served_model_name = 'gpt-oss'
-    model_path = '/kaggle/input/gpt-oss-120b/transformers/default/1'
+    model_path = '/kaggle/input/models/danielhanchen/gpt-oss-120b/transformers/default/1'
 
     kv_cache_dtype = 'fp8_e4m3'
     dtype = 'auto'
